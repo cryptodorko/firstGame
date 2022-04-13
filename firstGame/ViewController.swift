@@ -37,6 +37,12 @@ class ViewController: UIViewController {
         
         super.viewDidLoad()
         
+        time = 15
+        scoreLabel.text = "Score : 0"
+        
+        countdowntime = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(timeLeft), userInfo: nil, repeats: true)
+        
+        
         kennyArray = [imageView9, imageView8, imageView7, imageView6, imageView5, imageView4, imageView3, imageView2, imageView1]
         
         imageView1.image = UIImage(named: "morty")
@@ -81,7 +87,48 @@ class ViewController: UIViewController {
         
     }
     
+    @objc func timeLeft() {
+        
+        time -= 1
+        timeLabel.text = "Time Left: \(time)"
+        
+        /*
+        if score > highScore {
+            UserDefaults.standard.set(score, forKey: "NewHighScore")
+            highScore = score
+            highScoreLabel.text = "High Score: \(highScore)"
+        }
+         */
+     
+        if time == 0 {
+            countdowntime.invalidate()
+            
+            let alert = UIAlertController(title: "Time Over", message: "Play Again ?", preferredStyle: UIAlertController.Style.alert)
+            
+            let okButton = UIAlertAction(title: "Yes", style: UIAlertAction.Style.default) { UIAlertAction in
+                self.time = 15
+                self.timeLabel.text = "Time Left: \(self.time)"
+                self.score = 0
+                self.scoreLabel.text = "Score: \(self.score)"
+                self.countdowntime = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(self.timeLeft), userInfo: nil, repeats: true)
+            }
+            let noButton = UIAlertAction(title: "No", style: UIAlertAction.Style.default) { UIAlertAction in
+                self.timeLabel.text = "Your Time = -"
+                self.scoreLabel.text = "Your Score: -"
+                
+            }
+
+            alert.addAction(okButton)
+            alert.addAction(noButton)
+            self.present(alert, animated: true)
+        }
+            
+        
+        
+    }
+    
     @objc func tapped () {
+        
         score += 1
         scoreLabel.text = "Your Score : \(score)"
         
